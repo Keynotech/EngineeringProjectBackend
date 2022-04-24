@@ -1,4 +1,5 @@
 ## Folder structure
-### name-backend
-### name-mobile
-### name-app
+### 0.0.0.0/tasks - All available tasks
+### 0.0.0.0/tasks/{id} - Selected task
+### on edit:
+### title, 

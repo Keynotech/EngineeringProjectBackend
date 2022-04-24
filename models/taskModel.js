@@ -2,7 +2,7 @@ import mongoose from "mongoose"
 
 const taskSchema = mongoose.Schema({
   title: String,
-  priopity: Number,
+  priority: Number,
   description: String,
   attachments: String,
   status: Boolean,
@@ -13,6 +13,8 @@ const taskSchema = mongoose.Schema({
       ref: "TagModel",
     },
   ],
+  createdAt: { type: Date, default: Date.now },
+  dueDate: {type: Date},
 })
 
 var TaskModel = mongoose.model("TaskModel", taskSchema)

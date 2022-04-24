@@ -16,7 +16,7 @@ export const getTasks = async (req, res) => {
 export const createTask = async (req, res) => {
   const task = new TaskModel({
     title: req.body.title,
-    priopity: req.body.priopity,
+    priority: req.body.priopity,
     description: req.body.description,
     attachments: req.body.attachments,
     status: req.body.status,
@@ -69,6 +69,7 @@ export const editTask = async (req, res) => {
           attachments: req.body.attachments,
           tags: req.body.tags,
           status: req.body.status,
+          dueDate: req.body.dueDate,
         },
       }
     )

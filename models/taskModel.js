@@ -5,9 +5,15 @@ const taskSchema = mongoose.Schema({
   priopity: Number,
   description: String,
   attachments: String,
-  tags: String,
+  tagsArray: String,
   status: Boolean,
   updated: { type: Date, default: Date.now },
+  tags: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "TagModel",
+    },
+  ],
 })
 
 var TaskModel = mongoose.model("TaskModel", taskSchema)

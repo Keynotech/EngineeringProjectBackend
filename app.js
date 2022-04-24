@@ -2,23 +2,24 @@ import express from "express"
 import mongoose from "mongoose"
 import cors from "cors"
 import taskRoutes from "./routes/tasks.js"
-import 'dotenv/config'
+import tagsRoutes from "./routes/tags.js"
+import "dotenv/config"
 
 const app = express()
-
 
 //Middlewares
 
 app.use(cors())
 app.use(express.json())
 app.use("/tasks", taskRoutes)
+app.use("/tags", tagsRoutes)
 
 //Routes
 app.get("/", (req, res) => res.send())
 
 //Connect to DB
-const CONNECTION_URL = process.env.DB_CONNECTION;
-const PORT = process.env.PORT;
+const CONNECTION_URL = process.env.DB_CONNECTION
+const PORT = process.env.PORT
 
 mongoose
   .connect(CONNECTION_URL, { useNewUrlParser: true })

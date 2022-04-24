@@ -19,17 +19,29 @@ export const createTask = async (req, res) => {
     priopity: req.body.priopity,
     description: req.body.description,
     attachments: req.body.attachments,
-    tagsArray: req.body.tagsArray,
     status: req.body.status,
   })
-  const tag = new TagModel({
-    tagsArray: req.body.tagsArray,
-  })
-  try {
-    await task.save().then((task) => {})
-    await tag.save().then((tag) => {
-      res.redirect("/")
+
+  const tag = await TagModel.findOne({ tagName: req.body.tagsArray })
+
+  if (tag === null) {
+    const newTag = new TagModel({
+      tagName: req.body.tagsArray,
+      tasks: [task],
     })
+    newTag.save()
+    const tag = await TagModel.findOne({ tagName: req.body.tagsArray })
+
+    task.tags.push(tag)
+  } else {
+    tag.tasks.push(task)
+    task.tags.push(tag)
+    await tag.save()
+  }
+
+  try {
+    await task.save(task)
+    res.json(task)
   } catch (error) {
     res.status(400).json({ message: error.message })
   }

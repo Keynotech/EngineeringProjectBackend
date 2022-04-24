@@ -20,6 +20,7 @@ export const createTask = async (req, res) => {
     description: req.body.description,
     attachments: req.body.attachments,
     status: req.body.status,
+    dueDate: req.body.dueDate,
   })
 
   const tag = await TagModel.findOne({ tagName: req.body.tagsArray })

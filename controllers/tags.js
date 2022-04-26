@@ -26,7 +26,7 @@ export const getTagById = async (req, res) => {
 //Get All tasks with this tag
 export const getTasksByTag = async (req, res) => {
   try {
-    const tasks = await TagModel.findById(req.params.tagId).populate("tasks");
+    const tasks = await TagModel.findById(req.params.tagId).populate("tasks")
     res.status(201).json(tasks.tasks)
   } catch (error) {
     res.status(400).json({ message: error.message })
@@ -36,7 +36,7 @@ export const getTasksByTag = async (req, res) => {
 //Edit Tag <in progress>
 export const editTag = async (req, res) => {
   try {
-    const tag = await TagModel.updateOne(
+    const updatedTag = await TagModel.updateOne(
       { _id: req.params.tagId },
       {
         $set: {
@@ -44,7 +44,7 @@ export const editTag = async (req, res) => {
         },
       }
     )
-    res.json(tag)
+    res.json(updatedTag)
   } catch (error) {
     res.status(400).json({ message: error.message })
   }
@@ -65,26 +65,23 @@ export const newTag = async (req, res) => {
 }
 
 //Remove Tag
-export const removeTag = async(req, res) => {
-try{
-  const tag = await TagModel.findById(req.params.tagId).populate("tasks")
+export const removeTag = async (req, res) => {
+  try {
+    const tag = await TagModel.findById(req.params.tagId).populate("tasks")
 
-  let tasks = tag.tasks;
-  tasks.forEach(task => {
-    let index = task.tags.indexOf(tag._id);
-    task.tags.splice(index,1);
-    task.save();
-    console.log(index);
-  })
+    let tasks = tag.tasks
+    tasks.forEach((task) => {
+      let index = task.tags.indexOf(tag._id)
+      task.tags.splice(index, 1)
+      task.save()
+    })
 
-  await TagModel.deleteOne({ _id: req.params.tagId })
+    await TagModel.deleteOne({ _id: req.params.tagId })
 
+    //Delete Task from tags
 
-  //Delete Task from tags
-
-  res.json(tag)
-} catch (error) {
-  res.status(400).json({ message: error.message })
-}
-
+    res.json(tag)
+  } catch (error) {
+    res.status(400).json({ message: error.message })
+  }
 }

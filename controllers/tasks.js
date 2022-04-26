@@ -25,7 +25,7 @@ export const createTask = async (req, res) => {
     dueDate: req.body.dueDate,
   })
   try {
-    const tag = await TagModel.findOne({ tagName: req.body.tagsArray })
+    const tag = await TagModel.findOne({ tagName: req.body.tagName })
 
     //If tag not exists
     if (tag === null) {
@@ -34,10 +34,7 @@ export const createTask = async (req, res) => {
         tasks: [task],
       })
       newTag.save()
-      const tag = await TagModel.findOne({ tagName: req.body.tagsArray })
-
       task.tags.push(newTag._id)
-      console.log(newTag);
     }
     //If exists
     else {
@@ -54,9 +51,9 @@ export const createTask = async (req, res) => {
 }
 
 //Get all tags from specified task
-export const getTaskTags = async (req,res) =>{
-  const task = await TaskModel.findById(req.params.taskId).populate("tags");
-  res.json(task.tags);
+export const getTaskTags = async (req, res) => {
+  const task = await TaskModel.findById(req.params.taskId).populate("tags")
+  res.json(task.tags)
 }
 
 //Get One specified task
@@ -97,16 +94,14 @@ export const deleteTask = async (req, res) => {
   try {
     const task = await TaskModel.findById(req.params.taskId).populate("tags")
 
-    let tags = task.tags;
-    tags.forEach(tag => {
-      let index = tag.tasks.indexOf(task._id);
-      tag.tasks.splice(index,1);
-      tag.save();
-      console.log(index);
+    let tags = task.tags
+    tags.forEach((tag) => {
+      let index = tag.tasks.indexOf(task._id)
+      tag.tasks.splice(index, 1)
+      tag.save()
     })
 
     await TaskModel.deleteOne({ _id: req.params.taskId })
-
 
     //Delete Task from tags
 

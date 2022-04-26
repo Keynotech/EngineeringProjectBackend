@@ -6,6 +6,7 @@ import {
   editTask,
   deleteTask,
   getOneTask,
+  getTaskTags,
 } from "../controllers/tasks.js"
 
 const router = express.Router()
@@ -13,6 +14,8 @@ const router = express.Router()
 router.get("/", getTasks)
 
 router.get("/:taskId", getOneTask)
+
+router.get("/:taskId/tags", getTaskTags)
 
 router.post("/", createTask)
 

@@ -4,6 +4,7 @@ import TaskModel from "../models/taskModel.js"
 
 const router = express.Router()
 
+//Get All tags
 export const getTags = async (req, res) => {
   try {
     const tags = await TagModel.find()
@@ -13,33 +14,42 @@ export const getTags = async (req, res) => {
   }
 }
 
+//Get All tasks with this tag
 export const getTasksByTag = async (req, res) => {
   try {
-    const { tagId } = req.params
-    const tasks = await TaskModel.findById(req.params.tagId)
-    res.status(201).json(tasks)
+    const tasks = await TagModel.findById(req.params.tagId).populate("tasks");
+    res.status(201).json(tasks.tasks)
   } catch (error) {
     res.status(400).json({ message: error.message })
   }
 }
 
-export const newTasktoTag = async (req, res) => {
+//Edit Tag
+export const editTag = async (req, res) => {
   try {
-    const { taskId } = req.params
+    const tag = await TagModel.updateOne(
+      { _id: req.params.taskId },
+      {
+        $set: {
+          tagName: req.body.title,
+        },
+      }
+    )
+    res.json(tag)
+  } catch (error) {
+    res.status(400).json({ message: error.message })
+  }
+}
 
-    const newTag = new TagModel(req.body)
-
-    const task = await TaskModel.findById(req.params.taskId)
-
-    newTag.tasks = task
-
+//Create Tag
+export const newTag = async (req, res) => {
+  try {
+    const newTag = new TagModel({
+      tagName: req.body.tagsArray,
+      tasks: [],
+    })
     await newTag.save()
-
-    task.tags.push(newTag)
-
-    await task.save()
-
-    res.status(200).json(newTag)
+    res.json(newTag)
   } catch (error) {
     res.status(400).json({ message: error.message })
   }

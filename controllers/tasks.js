@@ -4,6 +4,7 @@ import TagModel from "../models/tagModel.js"
 
 const router = express.Router()
 
+//Get all tasks
 export const getTasks = async (req, res) => {
   try {
     const tasks = await TaskModel.find()
@@ -13,6 +14,7 @@ export const getTasks = async (req, res) => {
   }
 }
 
+//Create a mew Task with tag
 export const createTask = async (req, res) => {
   const task = new TaskModel({
     title: req.body.title,
@@ -22,25 +24,28 @@ export const createTask = async (req, res) => {
     status: req.body.status,
     dueDate: req.body.dueDate,
   })
-
-  const tag = await TagModel.findOne({ tagName: req.body.tagsArray })
-
-  if (tag === null) {
-    const newTag = new TagModel({
-      tagName: req.body.tagsArray,
-      tasks: [task],
-    })
-    newTag.save()
+  try {
     const tag = await TagModel.findOne({ tagName: req.body.tagsArray })
 
-    task.tags.push(tag)
-  } else {
-    tag.tasks.push(task)
-    task.tags.push(tag)
-    await tag.save()
-  }
+    //If tag not exists
+    if (tag === null) {
+      const newTag = new TagModel({
+        tagName: req.body.tagsArray,
+        tasks: [task],
+      })
+      newTag.save()
+      const tag = await TagModel.findOne({ tagName: req.body.tagsArray })
 
-  try {
+      task.tags.push(newTag._id)
+      console.log(newTag);
+    }
+    //If exists
+    else {
+      tag.tasks.push(task)
+      task.tags.push(tag)
+      await tag.save()
+    }
+
     await task.save(task)
     res.json(task)
   } catch (error) {
@@ -48,6 +53,13 @@ export const createTask = async (req, res) => {
   }
 }
 
+//Get all tags from specified task
+export const getTaskTags = async (req,res) =>{
+  const task = await TaskModel.findById(req.params.taskId).populate("tags");
+  res.json(task.tags);
+}
+
+//Get One specified task
 export const getOneTask = async (req, res) => {
   try {
     const task = await TaskModel.findById(req.params.taskId)
@@ -57,6 +69,7 @@ export const getOneTask = async (req, res) => {
   }
 }
 
+//Edit task
 export const editTask = async (req, res) => {
   try {
     const task = await TaskModel.updateOne(
@@ -69,7 +82,7 @@ export const editTask = async (req, res) => {
           attachments: req.body.attachments,
           tags: req.body.tags,
           status: req.body.status,
-          dueDate: req.body.dueDate,
+          dueDate: Date.now,
         },
       }
     )
@@ -79,6 +92,7 @@ export const editTask = async (req, res) => {
   }
 }
 
+//Remove task
 export const deleteTask = async (req, res) => {
   try {
     const task = await TaskModel.findById(req.params.taskId)

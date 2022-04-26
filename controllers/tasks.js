@@ -60,7 +60,7 @@ export const getTaskTags = async (req,res) =>{
 }
 
 //Get One specified task
-export const getOneTask = async (req, res) => {
+export const getTaskById = async (req, res) => {
   try {
     const task = await TaskModel.findById(req.params.taskId)
     res.json(task)
@@ -80,7 +80,6 @@ export const editTask = async (req, res) => {
           priority: req.body.priority,
           description: req.body.description,
           attachments: req.body.attachments,
-          tags: req.body.tags,
           status: req.body.status,
           dueDate: req.body.dueDate,
           updated: Date.now(),
@@ -96,8 +95,15 @@ export const editTask = async (req, res) => {
 //Remove task
 export const deleteTask = async (req, res) => {
   try {
-    const task = await TaskModel.findById(req.params.taskId)
+    const task = await TaskModel.findById(req.params.taskId).populate("tags")
 
+    let tags = task.tags;
+    tags.forEach(tag => {
+      let index = tag.tasks.indexOf(task._id);
+      tag.tasks.splice(index,1);
+      tag.save();
+      console.log(index);
+    })
 
     await TaskModel.deleteOne({ _id: req.params.taskId })
 

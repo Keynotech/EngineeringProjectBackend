@@ -14,6 +14,15 @@ export const getTags = async (req, res) => {
   }
 }
 
+export const getTagById = async (req, res) => {
+  try {
+    const tag = await TagModel.findById(req.params.tagId)
+    res.json(tag)
+  } catch (error) {
+    res.status(400).json({ message: error.message })
+  }
+}
+
 //Get All tasks with this tag
 export const getTasksByTag = async (req, res) => {
   try {
@@ -24,11 +33,11 @@ export const getTasksByTag = async (req, res) => {
   }
 }
 
-//Edit Tag
+//Edit Tag <in progress>
 export const editTag = async (req, res) => {
   try {
     const tag = await TagModel.updateOne(
-      { _id: req.params.taskId },
+      { _id: req.params.tagId },
       {
         $set: {
           tagName: req.body.title,
@@ -53,4 +62,29 @@ export const newTag = async (req, res) => {
   } catch (error) {
     res.status(400).json({ message: error.message })
   }
+}
+
+//Remove Tag
+export const removeTag = async(req, res) => {
+try{
+  const tag = await TagModel.findById(req.params.tagId).populate("tasks")
+
+  let tasks = tag.tasks;
+  tasks.forEach(task => {
+    let index = task.tags.indexOf(tag._id);
+    task.tags.splice(index,1);
+    task.save();
+    console.log(index);
+  })
+
+  await TagModel.deleteOne({ _id: req.params.tagId })
+
+
+  //Delete Task from tags
+
+  res.json(tag)
+} catch (error) {
+  res.status(400).json({ message: error.message })
+}
+
 }

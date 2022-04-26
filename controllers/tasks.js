@@ -83,7 +83,7 @@ export const editTask = async (req, res) => {
           tags: req.body.tags,
           status: req.body.status,
           dueDate: req.body.dueDate,
-          updated: Date.now
+          updated: Date.now(),
         },
       }
     )
@@ -97,7 +97,6 @@ export const editTask = async (req, res) => {
 export const deleteTask = async (req, res) => {
   try {
     const task = await TaskModel.findById(req.params.taskId)
-
 
 
     await TaskModel.deleteOne({ _id: req.params.taskId })

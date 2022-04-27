@@ -5,6 +5,8 @@ import taskRoutes from "./routes/tasks.js"
 import tagsRoutes from "./routes/tags.js"
 import "dotenv/config"
 
+import { upload } from "./controllers/files.js"
+
 const app = express()
 
 //Middlewares
@@ -13,6 +15,12 @@ app.use(cors())
 app.use(express.json())
 app.use("/tasks", taskRoutes)
 app.use("/tags", tagsRoutes)
+
+//multer post
+app.post("/img", upload.single("file"), function (req, res) {
+  res.json({})
+})
+
 
 //Routes
 app.get("/", (req, res) => res.send())

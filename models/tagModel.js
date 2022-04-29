@@ -2,7 +2,10 @@ import mongoose from "mongoose"
 
 const tagSchema = mongoose.Schema({
   tagName: String,
-  color: String,
+  color: {
+    type: String,
+    default: "gray"
+  },
   tasks: [
     {
       type: mongoose.Schema.Types.ObjectId,

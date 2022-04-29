@@ -1,7 +1,7 @@
 import express from "express"
 import TaskModel from "../models/taskModel.js"
 import TagModel from "../models/tagModel.js"
-import FileModel from "../models/fileModel.js"
+import FileModel from "../models/FileModel.js"
 
 const router = express.Router()
 
@@ -25,11 +25,26 @@ export const createTask = async (req, res) => {
     status: req.body.status,
     dueDate: req.body.dueDate,
   })
+
   try {
     const tag = await TagModel.findOne({ tagName: req.body.tagName })
-    const newFile = await FileModel.create({
-      name: req.file.filename,
-    })
+
+    const file = await FileModel.findOne({ itemImage: req.files })
+    //If tag not exists
+
+    if (file !== null) {
+      let itemImage = req.file.path
+      FileModel.create(
+        {
+          itemImage: itemImage,
+        },
+        (err, data) => {
+          if (err) return handleError(err)
+
+          res.status(201).json(data)
+        }
+      )
+    }
     //If tag not exists
     if (tag === null) {
       const newTag = new TagModel({
@@ -47,7 +62,7 @@ export const createTask = async (req, res) => {
     }
 
     await task.save(task)
-    res.json(task, newFile)
+    res.json(task)
   } catch (error) {
     res.status(400).json({ message: error.message })
   }

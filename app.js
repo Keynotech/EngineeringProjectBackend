@@ -16,11 +16,6 @@ app.use(express.json())
 app.use("/tasks", taskRoutes)
 app.use("/tags", tagsRoutes)
 
-//multer post
-app.post("/upload", upload.single("file"), function (req, res) {
-  res.json({})
-})
-
 //Routes
 app.get("/", (req, res) => res.send())
 

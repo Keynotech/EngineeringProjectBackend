@@ -48,7 +48,7 @@ export const createTask = async (req, res) => {
     //If tag not exists
     if (tag === null) {
       const newTag = new TagModel({
-        tagName: req.body.tagsArray,
+        tagName: req.body.tagName,
         tasks: [task],
       })
       newTag.save()

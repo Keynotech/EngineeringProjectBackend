@@ -27,10 +27,11 @@ export const createTask = async (req, res) => {
   })
 
   try {
-    const tag = await TagModel.findOne({ tagName: req.body.tagName })
+    const tag = await TagModel.findOne({ _id: req.body.tags[0] })
 
+    ```
     const file = await FileModel.findOne({ itemImage: req.files })
-    //If tag not exists
+    
 
     if (file !== null) {
       let itemImage = req.file.path
@@ -45,10 +46,14 @@ export const createTask = async (req, res) => {
         }
       )
     }
+    ```
+
     //If tag not exists
     if (tag === null) {
+      //if (req.body.tagName == "") return console.log("Pusty tag");
       const newTag = new TagModel({
-        tagName: req.body.tagsArray,
+        tagName: req.body.tagName,
+        color: req.body.color,
         tasks: [task],
       })
       newTag.save()
@@ -56,6 +61,7 @@ export const createTask = async (req, res) => {
     }
     //If exists
     else {
+      //if (req.body.tagName == "") return console.log("Pusty tag");;
       tag.tasks.push(task)
       task.tags.push(tag)
       await tag.save()

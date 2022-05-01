@@ -41,6 +41,7 @@ export const editTag = async (req, res) => {
       {
         $set: {
           tagName: req.body.title,
+          color: req.body.color,
         },
       }
     )
@@ -54,7 +55,8 @@ export const editTag = async (req, res) => {
 export const newTag = async (req, res) => {
   try {
     const newTag = new TagModel({
-      tagName: req.body.tagsArray,
+      tagName: req.body.tagName,
+      color: req.body.color,
       tasks: [],
     })
     await newTag.save()

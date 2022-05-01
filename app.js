@@ -1,11 +1,12 @@
 import express from "express"
 import mongoose from "mongoose"
 import cors from "cors"
-import taskRoutes from "./routes/tasks.js"
-import tagsRoutes from "./routes/tags.js"
+import taskRoutes from "./tasks/taskRouter.js"
+import tagRoutes from "./tags/tagRouter.js"
+import userRoutes from "./users/userRouter.js"
 import "dotenv/config"
 
-import { upload } from "./controllers/files.js"
+import { upload } from "./files/fileController.js"
 
 const app = express()
 
@@ -14,7 +15,8 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 app.use("/tasks", taskRoutes)
-app.use("/tags", tagsRoutes)
+app.use("/tags", tagRoutes)
+app.use("/users", userRoutes)
 
 //Routes
 app.get("/", (req, res) => res.send())

@@ -6,15 +6,20 @@ import {
   getSingleUserTask,
   editSingleUserTask,
   getAllTaskTags,
-  getAllTaskFiles,
 } from "./taskController.js"
+import {
+  uploadFiletoTask,
+  uploadNewUserFile,
+  upload,
+} from "../files/fileController.js"
 
 const router = express.Router()
 
 router.get("/", getUserTasks) //Get All User Tasks
 router.get("/:taskId", getSingleUserTask) //Get One User Task
 router.get("/:taskId/tags", getAllTaskTags)
-router.get("/:taskId/files", getAllTaskFiles) // Get All Task - Files
+
+router.post("/:taskId/files", upload.array("file", 3), uploadFiletoTask) // Get All Task - Files
 
 //Create new empty Task
 router.post("/", createUserTask)

@@ -18,6 +18,8 @@ app.use("/tags", tagRoutes)
 app.use("/users", userRoutes)
 app.use("/files", fileRoutes)
 
+app.use("/upload", express.static("uploads"))
+
 //Routes
 app.get("/", (req, res) => res.send())
 

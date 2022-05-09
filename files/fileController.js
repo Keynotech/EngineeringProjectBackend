@@ -1,5 +1,6 @@
 import multer from "multer"
 import FileModel from "./fileModel.js"
+import TaskModel from "../tasks/taskModel.js"
 import express from "express"
 
 const defaultUserId = "6278217a9d4d08518aeef835"
@@ -17,16 +18,32 @@ export const storage = multer.diskStorage({
 
 export const upload = multer({
   storage: storage,
-  limits: { fileSize: 10000000 }, //limit for one file
+  limits: { fileSize: 100000000000 },
 })
 
 //upload new user file
 export const uploadNewUserFile = async (req, res) => {
   try {
-    const file = new FileModel({
-      file: req.file,
+    var file = new FileModel({
+      file: req.files,
       user: defaultUserId,
     })
+    res.json(file)
+  } catch (error) {
+    res.status(400).json({ message: error.message })
+  }
+}
+
+//upload new user file
+export const uploadFiletoTask = async (req, res) => {
+  try {
+    const task = await TaskModel.findById({ _id: req.params.taskId })
+    var file = new FileModel({
+      file: req.files,
+      user: defaultUserId,
+    })
+    task.files.push(file)
+    task.save()
     res.json(file)
   } catch (error) {
     res.status(400).json({ message: error.message })

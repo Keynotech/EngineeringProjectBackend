@@ -34,15 +34,18 @@ export const uploadNewUserFile = async (req, res) => {
   }
 }
 
-//upload new user file
+//upload new file/files to task
 export const uploadFiletoTask = async (req, res) => {
+  console.log(req.files)
   try {
     const task = await TaskModel.findById({ _id: req.params.taskId })
-    var file = new FileModel({
-      file: req.files,
-      user: defaultUserId,
-    })
-    task.files.push(file)
+    for (var file of req.files) {
+      var file = new FileModel({
+        file,
+        user: defaultUserId,
+      })
+      task.files.push(file)
+    }
     task.save()
     res.json(file)
   } catch (error) {

@@ -4,12 +4,13 @@ import UserModel from "../users/userModel.js"
 import mongoose from "mongoose"
 
 const router = express.Router()
-const defaultUserId = "626eb1526f91d3b684e47cef"
-
+const defaultUserId = "6278217a9d4d08518aeef835"
 
 export const getUserTasks = async (req, res) => {
   try {
-    const user = await UserModel.findById({_id: defaultUserId}).populate("tasks") //Using admin user for testing
+    const user = await UserModel.findById({ _id: defaultUserId }).populate(
+      "tasks"
+    ) //Using admin user for testing
     res.status(200).json(user.tasks)
   } catch (error) {
     res.status(404).json({ message: error.message })
@@ -18,8 +19,22 @@ export const getUserTasks = async (req, res) => {
 
 export const getAllTaskTags = async (req, res) => {
   try {
-    const task = await TaskModel.findOne({_id: req.params.taskId}).populate("tags")
+    const task = await TaskModel.findOne({ _id: req.params.taskId }).populate(
+      "tags"
+    )
     res.status(200).json(task.tags)
+  } catch (error) {
+    res.status(404).json({ message: error.message })
+  }
+}
+
+// get all task files
+export const getAllTaskFiles = async (req, res) => {
+  try {
+    const task = await TaskModel.findOne({ _id: req.params.fileId }).populate(
+      "files"
+    )
+    res.status(200).json(task.files)
   } catch (error) {
     res.status(404).json({ message: error.message })
   }
@@ -27,18 +42,16 @@ export const getAllTaskTags = async (req, res) => {
 
 export const getSingleUserTask = async (req, res) => {
   try {
-    const task = await TaskModel.findOne({_id: req.params.taskId}) 
+    const task = await TaskModel.findOne({ _id: req.params.taskId })
     res.status(200).json(task)
   } catch (error) {
     res.status(404).json({ message: error.message })
   }
 }
 
-
 //Creating only task
 export const createUserTask = async (req, res) => {
-
-  try{
+  try {
     const task = new TaskModel({
       title: req.body.title,
       priority: req.body.priority,
@@ -48,54 +61,53 @@ export const createUserTask = async (req, res) => {
       tags: req.body.tags,
       dueDate: req.body.dueDate,
     })
-    task.save();
+    task.save()
 
-    const user = await UserModel.findById({_id: defaultUserId})
-    user.tasks.push(task);
-    user.save();
-    res.json(task);
-  }
-  catch(error){
-    res.status(404).json({message: error.message})
-  }
-}
-
-//Task removing - complete
-export const removeUserTask = async (req, res) => {
-  try{
-    const user = await UserModel.findById({_id: defaultUserId}) //get User
-
-    const taskToDelete = user.tasks.indexOf(req.params.taskId) //get Index task for delete
-    user.tasks.splice(taskToDelete,1) //remove task from user's tasks array
-    user.save() //save user
-    await TaskModel.deleteOne({_id: req.params.taskId}); //remove task
-    
-
-    res.json(user);
-  }
-  catch(error){
-    res.status(404).json({message: error.message})
-  }
-}
-
-export const editSingleUserTask = async (req, res) => {
-  try {
-    const task = await TaskModel.updateOne({_id: req.params.taskId}, {$set: {title: req.body.title, priority: req.body.priority, description: req.body.description, status: req.body.status, tags: req.body.tags, dueDate: req.body.dueDate}}) 
-    res.status(200).json(task)
+    const user = await UserModel.findById({ _id: defaultUserId })
+    user.tasks.push(task)
+    user.save()
+    res.json(task)
   } catch (error) {
     res.status(404).json({ message: error.message })
   }
 }
 
+//Task removing - complete
+export const removeUserTask = async (req, res) => {
+  try {
+    const user = await UserModel.findById({ _id: defaultUserId }) //get User
 
+    const taskToDelete = user.tasks.indexOf(req.params.taskId) //get Index task for delete
+    user.tasks.splice(taskToDelete, 1) //remove task from user's tasks array
+    user.save() //save user
+    await TaskModel.deleteOne({ _id: req.params.taskId }) //remove task
 
+    res.json(user)
+  } catch (error) {
+    res.status(404).json({ message: error.message })
+  }
+}
 
-
-
-
-
-
-
+export const editSingleUserTask = async (req, res) => {
+  try {
+    const task = await TaskModel.updateOne(
+      { _id: req.params.taskId },
+      {
+        $set: {
+          title: req.body.title,
+          priority: req.body.priority,
+          description: req.body.description,
+          status: req.body.status,
+          tags: req.body.tags,
+          dueDate: req.body.dueDate,
+        },
+      }
+    )
+    res.status(200).json(task)
+  } catch (error) {
+    res.status(404).json({ message: error.message })
+  }
+}
 
 //============================================
 

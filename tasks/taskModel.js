@@ -8,13 +8,20 @@ const taskSchema = mongoose.Schema({
   status: Boolean,
   updated: { type: Date, default: Date.now },
   createdAt: { type: Date, default: Date.now },
-  dueDate: {type: Date},
-  tags: [ //tags created
-  {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "TagModel",
-  },
-  ]
+  dueDate: { type: Date },
+  tags: [
+    //tags created
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "TagModel",
+    },
+  ],
+  files: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "FileModel",
+    },
+  ],
 })
 
 var TaskModel = mongoose.model("TaskModel", taskSchema)

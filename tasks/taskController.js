@@ -4,7 +4,7 @@ import UserModel from "../users/userModel.js"
 import mongoose from "mongoose"
 
 const router = express.Router()
-const defaultUserId = "6278217a9d4d08518aeef835"
+const defaultUserId = "627b690c3de80a23e64c1f48"
 
 export const getUserTasks = async (req, res) => {
   try {
@@ -23,18 +23,6 @@ export const getAllTaskTags = async (req, res) => {
       "tags"
     )
     res.status(200).json(task.tags)
-  } catch (error) {
-    res.status(404).json({ message: error.message })
-  }
-}
-
-// get all task files
-export const getAllTaskFiles = async (req, res) => {
-  try {
-    const task = await TaskModel.findOne({ _id: req.params.fileId }).populate(
-      "files"
-    )
-    res.status(200).json(task.files)
   } catch (error) {
     res.status(404).json({ message: error.message })
   }

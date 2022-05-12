@@ -4,7 +4,6 @@ import cors from "cors"
 import taskRoutes from "./tasks/taskRouter.js"
 import tagRoutes from "./tags/tagRouter.js"
 import userRoutes from "./users/userRouter.js"
-import fileRoutes from "./files/fileRouter.js"
 import "dotenv/config"
 
 const app = express()
@@ -16,7 +15,6 @@ app.use(express.json())
 app.use("/tasks", taskRoutes)
 app.use("/tags", tagRoutes)
 app.use("/users", userRoutes)
-app.use("/files", fileRoutes)
 
 app.use("/upload", express.static("uploads"))
 

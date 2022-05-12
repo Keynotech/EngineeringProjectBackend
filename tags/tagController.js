@@ -3,7 +3,7 @@ import TagModel from "./tagModel.js"
 import TaskModel from "../tasks/taskModel.js"
 import UserModel from "../users/userModel.js"
 
-const defaultUserId = "6278217a9d4d08518aeef835"
+const defaultUserId = "627b690c3de80a23e64c1f48"
 const router = express.Router()
 
 //create new user tag

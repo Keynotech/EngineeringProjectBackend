@@ -16,12 +16,10 @@ const taskSchema = mongoose.Schema({
       ref: "TagModel",
     },
   ],
-  files: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "FileModel",
-    },
-  ],
+  files: {
+    type: Array,
+    ref: "FileModel",
+  },
 })
 
 var TaskModel = mongoose.model("TaskModel", taskSchema)

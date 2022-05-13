@@ -1,6 +1,7 @@
 import multer from "multer"
 import FileModel from "./fileModel.js"
 import TaskModel from "../tasks/taskModel.js"
+import UserModel from "../users/userModel.js"
 import express from "express"
 
 const defaultUserId = "627b690c3de80a23e64c1f48"
@@ -50,5 +51,29 @@ export const uploadFiletoTask = async (req, res) => {
     res.json(file)
   } catch (error) {
     res.status(400).json({ message: error.message })
+  }
+}
+
+//remove file in task
+export const removeFile = async (req, res) => {
+  try {
+    const file = await FileModel.findById({ _id: req.params.fileId })
+
+    const user = await UserModel.findById({ _id: defaultUserId }).populate(
+      "tasks"
+    )
+    const tasks = user.tasks
+    console.log(tasks)
+    tasks.forEach((task) => {
+      let index = task.files.indexOf(file._id)
+      console.log(index)
+      task.files.splice(index, 1)
+      task.save()
+    })
+
+    await FileModel.deleteOne({ _id: req.params.fileId })
+    res.status(200).json(file)
+  } catch (error) {
+    res.status(404).json({ message: error.message })
   }
 }

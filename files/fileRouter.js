@@ -1,12 +1,10 @@
 import express from "express"
-import { upload, uploadNewUserFile, getAllFiles } from "./fileController.js"
+import { removeFile, uploadFiletoTask, upload } from "./fileController.js"
 
 const router = express.Router()
 
-//Get All Files
-router.get("/", getAllFiles)
+router.post("/:taskId/files", upload.array("file", 3), uploadFiletoTask) // Post all Files to task
 
-//Upload new File
-router.post("/", upload.array("file", 3), uploadNewUserFile)
+router.delete("/:taskId/:fileId", removeFile)
 
 export default router

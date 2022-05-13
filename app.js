@@ -16,9 +16,11 @@ app.use(express.json())
 app.use("/tasks", taskRoutes)
 app.use("/tags", tagRoutes)
 app.use("/users", userRoutes)
+
 app.use("/tasks", fileRoutes)
 
-app.use("/upload", express.static("uploads"))
+// path file userid == userid
+app.use("/tasks/:taskId/:fileId", express.static("uploads"))
 
 //Routes
 app.get("/", (req, res) => res.send())

@@ -13,7 +13,7 @@ export const storage = multer.diskStorage({
     cb(null, "./uploads") //dir path
   },
   filename: (req, file, cb) => {
-    cb(null, defaultUserId + "~" + "~" + file.originalname)
+    cb(null, file.originalname)
   },
 })
 

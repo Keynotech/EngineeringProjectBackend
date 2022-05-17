@@ -16,6 +16,10 @@ const taskSchema = mongoose.Schema({
       ref: "TagModel",
     },
   ],
+  project: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "ProjectModel",
+  },
   files: {
     type: Array,
     ref: "FileModel",

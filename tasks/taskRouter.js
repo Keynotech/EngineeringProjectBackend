@@ -6,13 +6,15 @@ import {
   getSingleUserTask,
   editSingleUserTask,
   getAllTaskTags,
+  getTasksByTag,
 } from "./taskController.js"
 
 const router = express.Router()
 
 router.get("/", getUserTasks) //Get All User Tasks
 router.get("/:taskId", getSingleUserTask) //Get One User Task
-router.get("/:taskId/tags", getAllTaskTags)
+router.get("/:taskId/tags", getAllTaskTags) //get all task tags
+router.get("/findByTag/:tagId", getTasksByTag) //get all tasks with tag
 
 //Create new empty Task
 router.post("/", createUserTask)

@@ -3,7 +3,7 @@ import TagModel from "./tagModel.js"
 import TaskModel from "../tasks/taskModel.js"
 import UserModel from "../users/userModel.js"
 
-const defaultUserId = "627b690c3de80a23e64c1f48"
+import {ID} from "../loggedUser.js";
 const router = express.Router()
 
 //create new user tag
@@ -23,19 +23,23 @@ export const createNewUserTag = async (req, res) => {
 //get all user tags
 export const getAllUserTags = async (req, res) => {
   try {
-    const tags = await TagModel.find({ user: defaultUserId })
+    const tags = await TagModel.find({ user: ID })
     res.status(200).json(tags)
   } catch (error) {
     res.status(404).json({ message: error.message })
   }
 }
 
-//remove user tag
+
+
+
+
+//remove user user tag
 export const removeUserTag = async (req, res) => {
   try {
     const tag = await TagModel.findById({ _id: req.params.tagId })
 
-    const user = await UserModel.findById({ _id: defaultUserId }).populate(
+    const user = await UserModel.findById({ _id: ID }).populate(
       "tasks"
     )
     const tasks = user.tasks

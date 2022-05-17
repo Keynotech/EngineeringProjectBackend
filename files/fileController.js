@@ -4,7 +4,7 @@ import TaskModel from "../tasks/taskModel.js"
 import UserModel from "../users/userModel.js"
 import express from "express"
 
-const defaultUserId = "627b690c3de80a23e64c1f48"
+import {ID} from "../loggedUser.js";
 const router = express.Router()
 
 //multer
@@ -40,7 +40,7 @@ export const uploadFiletoTask = async (req, res) => {
     for (var x = 0; x < req.files.length; x++) {
       var file = new FileModel({
         file: req.files[x],
-        user: defaultUserId,
+        user: ID,
         originalname: req.files[x].originalname,
       })
       task.files.push(file)
@@ -57,20 +57,15 @@ export const uploadFiletoTask = async (req, res) => {
 //remove file in task
 export const removeFile = async (req, res) => {
   try {
-    const file = await FileModel.findById({ _id: req.params.fileId })
-
-    const user = await UserModel.findById({ _id: defaultUserId }).populate(
+    const user = await UserModel.findById({ _id: ID }).populate(
       "tasks"
     )
-    const tasks = user.tasks
-    console.log(tasks)
-    tasks.forEach((task) => {
-      let index = task.files.indexOf(file._id)
-      console.log(index)
-      task.files.splice(index, 1)
-      task.save()
-    })
+    const task = await TaskModel.findById({ _id: req.params.taskId })
+    const files = task.files
 
+    const index = files.findIndex((file) => file._id === req.params.fileId)
+    task.files.splice(index, 1)
+    task.save()
     await FileModel.deleteOne({ _id: req.params.fileId })
     res.status(200).json(file)
   } catch (error) {

@@ -3,12 +3,12 @@ import TaskModel from "./taskModel.js"
 import UserModel from "../users/userModel.js"
 import mongoose from "mongoose"
 
+import {ID} from "../loggedUser.js";
 const router = express.Router()
-const defaultUserId = "627b690c3de80a23e64c1f48"
 
-export const getUserTasks = async (req, res) => {
+export const getUserTasks = async (req, res) => { //get all user tasks
   try {
-    const user = await UserModel.findById({ _id: defaultUserId }).populate(
+    const user = await UserModel.findById({ _id: ID }).populate(
       "tasks"
     ) //Using admin user for testing
     res.status(200).json(user.tasks)
@@ -17,7 +17,7 @@ export const getUserTasks = async (req, res) => {
   }
 }
 
-export const getAllTaskTags = async (req, res) => {
+export const getAllTaskTags = async (req, res) => { //getall tasks
   try {
     const task = await TaskModel.findOne({ _id: req.params.taskId }).populate(
       "tags"
@@ -28,7 +28,20 @@ export const getAllTaskTags = async (req, res) => {
   }
 }
 
-export const getSingleUserTask = async (req, res) => {
+export const getTasksByTag = async (req, res) => { //get Tasks by TagID
+  try {
+    console.log(req.params.tagId);
+    const tasks = await TaskModel.find(
+      { tags: { $elemMatch: { $eq: req.params.tagId} } }
+   )
+    console.log(tasks);
+    res.status(200).json(tasks)
+  } catch (error) {
+    res.status(404).json({ message: error.message })
+  }
+}
+
+export const getSingleUserTask = async (req, res) => { //get single task
   try {
     const task = await TaskModel.findOne({ _id: req.params.taskId })
     res.status(200).json(task)
@@ -38,7 +51,7 @@ export const getSingleUserTask = async (req, res) => {
 }
 
 //Creating only task
-export const createUserTask = async (req, res) => {
+export const createUserTask = async (req, res) => {//create task
   try {
     const task = new TaskModel({
       title: req.body.title,
@@ -51,7 +64,7 @@ export const createUserTask = async (req, res) => {
     })
     task.save()
 
-    const user = await UserModel.findById({ _id: defaultUserId })
+    const user = await UserModel.findById({ _id: ID })
     user.tasks.push(task)
     user.save()
     res.json(task)
@@ -61,9 +74,9 @@ export const createUserTask = async (req, res) => {
 }
 
 //Task removing - complete
-export const removeUserTask = async (req, res) => {
+export const removeUserTask = async (req, res) => { //remove task
   try {
-    const user = await UserModel.findById({ _id: defaultUserId }) //get User
+    const user = await UserModel.findById({ _id: ID }) //get User
 
     const taskToDelete = user.tasks.indexOf(req.params.taskId) //get Index task for delete
     user.tasks.splice(taskToDelete, 1) //remove task from user's tasks array
@@ -76,7 +89,7 @@ export const removeUserTask = async (req, res) => {
   }
 }
 
-export const editSingleUserTask = async (req, res) => {
+export const editSingleUserTask = async (req, res) => { //edit task
   try {
     const task = await TaskModel.updateOne(
       { _id: req.params.taskId },
@@ -96,124 +109,5 @@ export const editSingleUserTask = async (req, res) => {
     res.status(404).json({ message: error.message })
   }
 }
-
-//============================================
-
-/*
-//Get all tasks
-export const getTasks = async (req, res) => {
-  try {
-    const tasks = await TaskModel.find()
-    res.status(200).json(tasks)
-  } catch (error) {
-    res.status(404).json({ message: error.message })
-  }
-}
-
-//Create a mew Task with tag
-export const createTask = async (req, res) => {
-  const task = new TaskModel({
-    title: req.body.title,
-    priority: req.body.priority,
-    description: req.body.description,
-    attachments: req.body.attachments,
-    status: req.body.status,
-    dueDate: req.body.dueDate,
-  })
-
-  try {
-    for (const elem of req.body.tags) {
-      const tag = await TagModel.findOne({ _id: elem })
-      if (tag) {
-        tag.tasks.push(task)
-        task.tags.push(tag)
-        await tag.save()
-      }
-    }
-    await task.save(task)
-    res.json(task)
-  } catch (error) {
-    res.status(400).json({ message: error.message })
-  }
-}
-
-//Get all tags from specified task
-export const getTaskTags = async (req, res) => {
-  const task = await TaskModel.findById(req.params.taskId).populate("tags")
-  res.json(task.tags)
-}
-
-export const editTaskTags = async (req, res) =>{ 
-  const task = await TaskModel.findById(req.params.taskId);
-  const tags = task.tags;
-  console.log(console.log(tags))
-
-  const newTags = await TaskModel.updateOne(
-    { _id: req.params.taskId },
-    {
-      $set: {
-        tag: req.params.newTags,
-      },
-    }
-  )
-
-  res.json(task)
-}
-
-//Get One specified task
-export const getTaskById = async (req, res) => {
-  try {
-    const task = await TaskModel.findById(req.params.taskId)
-    res.json(task)
-  } catch (error) {
-    res.status(400).json({ message: error.message })
-  }
-}
-
-//Edit task
-export const editTask = async (req, res) => {
-  try {
-    const task = await TaskModel.updateOne(
-      { _id: req.params.taskId },
-      {
-        $set: {
-          title: req.body.title,
-          priority: req.body.priority,
-          description: req.body.description,
-          attachments: req.body.attachments,
-          status: req.body.status,
-          dueDate: req.body.dueDate,
-          updated: Date.now(),
-        },
-      }
-    )
-    res.json(task)
-  } catch (error) {
-    res.status(400).json({ message: error.message })
-  }
-}
-
-//Remove task
-export const deleteTask = async (req, res) => {
-  try {
-    const task = await TaskModel.findById(req.params.taskId).populate("tags")
-
-    let tags = task.tags
-    tags.forEach((tag) => {
-      let index = tag.tasks.indexOf(task._id)
-      tag.tasks.splice(index, 1)
-      tag.save()
-    })
-
-    await TaskModel.deleteOne({ _id: req.params.taskId })
-
-    //Delete Task from tags
-
-    res.json(task)
-  } catch (error) {
-    res.status(400).json({ message: error.message })
-  }
-}
-*/
 
 export default router

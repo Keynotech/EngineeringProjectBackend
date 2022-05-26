@@ -9,8 +9,8 @@ const router = express.Router()
 export const getUserTasks = async (req, res) => {
   //get all user tasks
   try {
-    const tasks = await TaskModel.find({ user: ID }) //Using admin user for testing
-    res.status(200).json(tasks)
+    const user = await UserModel.findById({ _id: ID }).populate("tasks")
+    res.status(200).json(user.tasks)
   } catch (error) {
     res.status(404).json({ message: error.message })
   }
@@ -60,7 +60,6 @@ export const createUserTask = async (req, res) => {
       title: req.body.title,
       priority: req.body.priority,
       description: req.body.description,
-      attachments: req.body.attachments,
       status: req.body.status,
       tags: req.body.tags,
       dueDate: req.body.dueDate,

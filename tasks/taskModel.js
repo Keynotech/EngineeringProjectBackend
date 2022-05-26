@@ -4,7 +4,6 @@ const taskSchema = mongoose.Schema({
   title: String,
   priority: Number,
   description: String,
-  attachments: String,
   status: Boolean,
   updated: { type: Date, default: Date.now },
   createdAt: { type: Date, default: Date.now },

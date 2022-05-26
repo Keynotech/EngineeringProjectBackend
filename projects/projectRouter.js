@@ -20,6 +20,6 @@ router.post("/", createNewProject)
 
 router.delete("/:projectId", removeProject)
 
-router.patch("/:tagId", editProject)
+router.patch("/:projectId", editProject)
 
 export default router

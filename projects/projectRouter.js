@@ -4,6 +4,8 @@ import {
   createNewProject,
   getSingleProject,
   getAllProjectTasks,
+  removeProject,
+  editProject,
 } from "./projectController.js"
 
 const router = express.Router()
@@ -15,5 +17,9 @@ router.get("/:projectId", getSingleProject)
 router.get("/:projectId/tasks", getAllProjectTasks)
 
 router.post("/", createNewProject)
+
+router.delete("/:projectId", removeProject)
+
+router.patch("/:tagId", editProject)
 
 export default router

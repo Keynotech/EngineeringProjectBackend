@@ -3,7 +3,7 @@ import TagModel from "./tagModel.js"
 import TaskModel from "../tasks/taskModel.js"
 import UserModel from "../users/userModel.js"
 
-import {ID} from "../loggedUser.js";
+import { ID } from "../loggedUser.js"
 const router = express.Router()
 
 //create new user tag
@@ -11,7 +11,7 @@ export const createNewUserTag = async (req, res) => {
   try {
     const newTag = new TagModel({
       tagName: req.body.tagName,
-      user: defaultUserId,
+      user: ID,
     })
     await newTag.save()
     res.json(newTag)
@@ -30,18 +30,12 @@ export const getAllUserTags = async (req, res) => {
   }
 }
 
-
-
-
-
 //remove user user tag
 export const removeUserTag = async (req, res) => {
   try {
     const tag = await TagModel.findById({ _id: req.params.tagId })
 
-    const user = await UserModel.findById({ _id: ID }).populate(
-      "tasks"
-    )
+    const user = await UserModel.findById({ _id: ID }).populate("tasks")
     const tasks = user.tasks
     console.log(tasks)
     tasks.forEach((task) => {

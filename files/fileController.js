@@ -4,7 +4,7 @@ import TaskModel from "../tasks/taskModel.js"
 import UserModel from "../users/userModel.js"
 import express from "express"
 
-import {ID} from "../loggedUser.js";
+import { ID } from "../loggedUser.js"
 const router = express.Router()
 
 //multer
@@ -24,7 +24,13 @@ export const upload = multer({
     if (
       file.mimetype == "image/jpeg" ||
       file.mimetype == "image/png" ||
-      file.mimetype == "image/jpg"
+      file.mimetype == "image/jpg" ||
+      file.mimetype == "text/plain" || // zip rar 7zip xml
+      file.mimetype ==
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || //docx
+      file.mimetype ==
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || //xlsx
+      file.mimetype == "application/pdf"
     ) {
       cb(null, true)
     } else {
@@ -57,9 +63,7 @@ export const uploadFiletoTask = async (req, res) => {
 //remove file in task
 export const removeFile = async (req, res) => {
   try {
-    const user = await UserModel.findById({ _id: ID }).populate(
-      "tasks"
-    )
+    const user = await UserModel.findById({ _id: ID }).populate("tasks")
     const task = await TaskModel.findById({ _id: req.params.taskId })
     const files = task.files
 

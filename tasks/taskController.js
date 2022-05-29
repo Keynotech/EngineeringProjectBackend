@@ -3,21 +3,21 @@ import TaskModel from "./taskModel.js"
 import UserModel from "../users/userModel.js"
 import mongoose from "mongoose"
 
-import {ID} from "../loggedUser.js";
+import { ID } from "../loggedUser.js"
 const router = express.Router()
 
-export const getUserTasks = async (req, res) => { //get all user tasks
+export const getUserTasks = async (req, res) => {
+  //get all user tasks
   try {
-    const user = await UserModel.findById({ _id: ID }).populate(
-      "tasks"
-    ) //Using admin user for testing
+    const user = await UserModel.findById({ _id: ID }).populate("tasks")
     res.status(200).json(user.tasks)
   } catch (error) {
     res.status(404).json({ message: error.message })
   }
 }
 
-export const getAllTaskTags = async (req, res) => { //getall tasks
+export const getAllTaskTags = async (req, res) => {
+  //getall tasks
   try {
     const task = await TaskModel.findOne({ _id: req.params.taskId }).populate(
       "tags"
@@ -28,20 +28,22 @@ export const getAllTaskTags = async (req, res) => { //getall tasks
   }
 }
 
-export const getTasksByTag = async (req, res) => { //get Tasks by TagID
+export const getTasksByTag = async (req, res) => {
+  //get Tasks by TagID
   try {
-    console.log(req.params.tagId);
-    const tasks = await TaskModel.find(
-      { tags: { $elemMatch: { $eq: req.params.tagId} } }
-   )
-    console.log(tasks);
+    console.log(req.params.tagId)
+    const tasks = await TaskModel.find({
+      tags: { $elemMatch: { $eq: req.params.tagId } },
+    })
+    console.log(tasks)
     res.status(200).json(tasks)
   } catch (error) {
     res.status(404).json({ message: error.message })
   }
 }
 
-export const getSingleUserTask = async (req, res) => { //get single task
+export const getSingleUserTask = async (req, res) => {
+  //get single task
   try {
     const task = await TaskModel.findOne({ _id: req.params.taskId })
     res.status(200).json(task)
@@ -51,13 +53,13 @@ export const getSingleUserTask = async (req, res) => { //get single task
 }
 
 //Creating only task
-export const createUserTask = async (req, res) => {//create task
+export const createUserTask = async (req, res) => {
+  //create task
   try {
     const task = new TaskModel({
       title: req.body.title,
       priority: req.body.priority,
       description: req.body.description,
-      attachments: req.body.attachments,
       status: req.body.status,
       tags: req.body.tags,
       dueDate: req.body.dueDate,
@@ -74,7 +76,8 @@ export const createUserTask = async (req, res) => {//create task
 }
 
 //Task removing - complete
-export const removeUserTask = async (req, res) => { //remove task
+export const removeUserTask = async (req, res) => {
+  //remove task
   try {
     const user = await UserModel.findById({ _id: ID }) //get User
 
@@ -89,7 +92,8 @@ export const removeUserTask = async (req, res) => { //remove task
   }
 }
 
-export const editSingleUserTask = async (req, res) => { //edit task
+export const editSingleUserTask = async (req, res) => {
+  //edit task
   try {
     const task = await TaskModel.updateOne(
       { _id: req.params.taskId },
@@ -101,6 +105,7 @@ export const editSingleUserTask = async (req, res) => { //edit task
           status: req.body.status,
           tags: req.body.tags,
           dueDate: req.body.dueDate,
+          project: req.body.project,
         },
       }
     )

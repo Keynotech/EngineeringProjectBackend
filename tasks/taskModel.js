@@ -4,7 +4,6 @@ const taskSchema = mongoose.Schema({
   title: String,
   priority: Number,
   description: String,
-  attachments: String,
   status: Boolean,
   updated: { type: Date, default: Date.now },
   createdAt: { type: Date, default: Date.now },
@@ -16,6 +15,10 @@ const taskSchema = mongoose.Schema({
       ref: "TagModel",
     },
   ],
+  project: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "ProjectModel",
+  },
   files: {
     type: Array,
     ref: "FileModel",

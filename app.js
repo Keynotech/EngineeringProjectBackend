@@ -6,6 +6,7 @@ import tagRoutes from "./tags/tagRouter.js"
 import userRoutes from "./users/userRouter.js"
 import fileRoutes from "./files/fileRouter.js"
 import projectRoutes from "./projects/projectRouter.js"
+import folderRoutes from "./folders/folderRouter.js"
 import "dotenv/config"
 
 const app = express()
@@ -19,6 +20,7 @@ app.use("/tags", tagRoutes)
 app.use("/users", userRoutes)
 app.use("/tasks", fileRoutes)
 app.use("/projects", projectRoutes)
+app.use("/folders", folderRoutes)
 
 // path file userid == userid
 app.use("/tasks/:taskId/:fileId", express.static("uploads"))

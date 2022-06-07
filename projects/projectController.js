@@ -76,7 +76,9 @@ export const editProject = async (req, res) => {
   try {
     const project = await ProjectModel.updateOne(
       { _id: req.params.projectId },
-      { $set: { projectName: req.body.projectName } }
+      {
+        $set: { projectName: req.body.projectName, folder: req.body.folder },
+      }
     )
     res.status(200).json(project)
   } catch (error) {

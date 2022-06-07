@@ -106,6 +106,7 @@ export const editSingleUserTask = async (req, res) => {
           tags: req.body.tags,
           dueDate: req.body.dueDate,
           project: req.body.project,
+          updated: Date.now(),
         },
       }
     )

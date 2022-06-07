@@ -8,6 +8,7 @@ const router = express.Router()
 
 export const getUserTasks = async (req, res) => {
   //get all user tasks
+  console.log(req.ip);
   try {
     const user = await UserModel.findById({ _id: ID }).populate("tasks")
     res.status(200).json(user.tasks)
@@ -18,6 +19,7 @@ export const getUserTasks = async (req, res) => {
 
 export const getAllTaskTags = async (req, res) => {
   //getall tasks
+  console.log(req.ip);
   try {
     const task = await TaskModel.findOne({ _id: req.params.taskId }).populate(
       "tags"
@@ -30,6 +32,7 @@ export const getAllTaskTags = async (req, res) => {
 
 export const getTasksByTag = async (req, res) => {
   //get Tasks by TagID
+  console.log(req.ip);
   try {
     console.log(req.params.tagId)
     const tasks = await TaskModel.find({
@@ -44,6 +47,7 @@ export const getTasksByTag = async (req, res) => {
 
 export const getSingleUserTask = async (req, res) => {
   //get single task
+  console.log(req.ip);
   try {
     const task = await TaskModel.findOne({ _id: req.params.taskId })
     res.status(200).json(task)
@@ -55,6 +59,7 @@ export const getSingleUserTask = async (req, res) => {
 //Creating only task
 export const createUserTask = async (req, res) => {
   //create task
+  console.log(req.ip);
   try {
     const task = new TaskModel({
       title: req.body.title,
@@ -78,6 +83,7 @@ export const createUserTask = async (req, res) => {
 //Task removing - complete
 export const removeUserTask = async (req, res) => {
   //remove task
+  console.log(req.ip);
   try {
     const user = await UserModel.findById({ _id: ID }) //get User
 
@@ -94,6 +100,7 @@ export const removeUserTask = async (req, res) => {
 
 export const editSingleUserTask = async (req, res) => {
   //edit task
+  console.log(req.ip);
   try {
     const task = await TaskModel.updateOne(
       { _id: req.params.taskId },

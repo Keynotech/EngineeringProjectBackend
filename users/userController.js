@@ -4,6 +4,7 @@ import UserModel from "./userModel.js"
 const router = express.Router()
 
 export const getAllUsers = async (req, res) => {
+  console.log(req.ip);
   try {
     const users = await UserModel.find()
     res.status(200).json(users)
@@ -13,6 +14,7 @@ export const getAllUsers = async (req, res) => {
 }
 
 export const createNewUser = async (req, res) => {
+  console.log(req.ip);
   try {
     const user = new UserModel({
       login: req.body.login,

@@ -14,6 +14,11 @@ export const createNewProject = async (req, res) => {
       user: ID,
     })
     await newProject.save()
+
+    const user = await UserModel.findById({ _id: ID })
+    user.projects.push(newProject)
+    user.save()
+
     res.json(newProject)
   } catch (error) {
     res.status(400).json({ message: error.message })

@@ -2,6 +2,7 @@ import express from "express"
 import ProjectModel from "./projectModel.js"
 import TaskModel from "../tasks/taskModel.js"
 import UserModel from "../users/userModel.js"
+import FolderModel from "../folders/folderModel.js"
 
 import { ID } from "../loggedUser.js"
 const router = express.Router()
@@ -9,9 +10,12 @@ const router = express.Router()
 //create new project
 export const createNewProject = async (req, res) => {
   try {
+    const folderId = req.body.folder
+
     const newProject = new ProjectModel({
       projectName: req.body.projectName,
       user: ID,
+      folder: folderId,
     })
     await newProject.save()
 

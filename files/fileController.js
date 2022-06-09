@@ -2,15 +2,17 @@ import multer from "multer"
 import FileModel from "./fileModel.js"
 import TaskModel from "../tasks/taskModel.js"
 import UserModel from "../users/userModel.js"
-import express from "express"
+import express, { application } from "express"
+import cors from "cors"
 
 import { ID } from "../loggedUser.js"
 const router = express.Router()
 
 //multer
+const path = "./uploads"
 export const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "./uploads") //dir path
+    cb(null, path) //dir path
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname)
@@ -42,7 +44,7 @@ export const upload = multer({
 export const uploadFiletoTask = async (req, res) => {
   try {
     const task = await TaskModel.findById({ _id: req.params.taskId })
-
+    const data = []
     for (var x = 0; x < req.files.length; x++) {
       var file = new FileModel({
         file: req.files[x],
@@ -51,12 +53,41 @@ export const uploadFiletoTask = async (req, res) => {
       })
       task.files.push(file)
       file.save(file)
+      data.push(file)
     }
 
     task.save()
-    res.json(file)
+    res.json(data)
   } catch (error) {
     res.status(400).json({ message: error.message })
+  }
+}
+
+//remove file in task
+export const removeFile2 = async (req, res) => {
+  try {
+    const user = await UserModel.findById({ _id: ID }).populate("tasks")
+    const task = await TaskModel.findById({ _id: req.params.taskId })
+    const filetodel = await FileModel.findOne({ _id: req.params.fileId })
+
+    console.log(req.params.fileId)
+
+    console.log(filetodel._id, "f to del")
+
+    const taskfiledel = await TaskModel.find({
+      files: { $eq: req.params.fileId },
+    })
+    console.log(taskfiledel, "files")
+
+    const deletef = await TaskModel.find({ files: filetodel })
+
+    console.log(deletef, "delete")
+
+    task.save()
+    //await FileModel.deleteOne({ _id: req.params.fileId })
+    res.status(200).json(file)
+  } catch (error) {
+    res.status(404).json({ message: error.message })
   }
 }
 
@@ -65,14 +96,47 @@ export const removeFile = async (req, res) => {
   try {
     const user = await UserModel.findById({ _id: ID }).populate("tasks")
     const task = await TaskModel.findById({ _id: req.params.taskId })
-    const files = task.files
+    const filetodel = await FileModel.findOne({ _id: req.params.fileId })
 
-    const index = files.findIndex((file) => file._id === req.params.fileId)
-    task.files.splice(index, 1)
+    await TaskModel.updateOne(
+      { _id: req.params.taskId },
+      { $pull: { files: { $eq: filetodel._id } } },
+      false,
+      true
+    )
+
+    console.log(req.params.fileId)
+    console.log(task.files)
+
+    const index = task.files.indexOf(req.params.fileId)
+    console.log(index)
+
+    //task.files.splice(index, 1)
     task.save()
-    await FileModel.deleteOne({ _id: req.params.fileId })
+    //await FileModel.deleteOne({ _id: req.params.fileId })
     res.status(200).json(file)
   } catch (error) {
     res.status(404).json({ message: error.message })
   }
 }
+
+export const getSingleFile = async (req, res) => {
+  try {
+    const file = await FileModel.findOne({ _id: req.params.fileId })
+    res.status(200).json(file)
+  } catch (error) {
+    res.status(404).json({ message: error.message })
+  }
+}
+
+//get all projects
+export const getAllFiles = async (req, res) => {
+  try {
+    const file = await FileModel.find({ user: ID })
+    res.status(200).json(file)
+  } catch (error) {
+    res.status(404).json({ message: error.message })
+  }
+}
+
+export default router

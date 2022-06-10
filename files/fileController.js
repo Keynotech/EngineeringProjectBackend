@@ -64,56 +64,25 @@ export const uploadFiletoTask = async (req, res) => {
 }
 
 //remove file in task
-export const removeFile2 = async (req, res) => {
-  try {
-    const user = await UserModel.findById({ _id: ID }).populate("tasks")
-    const task = await TaskModel.findById({ _id: req.params.taskId })
-    const filetodel = await FileModel.findOne({ _id: req.params.fileId })
-
-    console.log(req.params.fileId)
-
-    console.log(filetodel._id, "f to del")
-
-    const taskfiledel = await TaskModel.find({
-      files: { $eq: req.params.fileId },
-    })
-    console.log(taskfiledel, "files")
-
-    const deletef = await TaskModel.find({ files: filetodel })
-
-    console.log(deletef, "delete")
-
-    task.save()
-    //await FileModel.deleteOne({ _id: req.params.fileId })
-    res.status(200).json(file)
-  } catch (error) {
-    res.status(404).json({ message: error.message })
-  }
-}
-
-//remove file in task
 export const removeFile = async (req, res) => {
   try {
     const user = await UserModel.findById({ _id: ID }).populate("tasks")
     const task = await TaskModel.findById({ _id: req.params.taskId })
-    const filetodel = await FileModel.findOne({ _id: req.params.fileId })
 
-    await TaskModel.updateOne(
-      { _id: req.params.taskId },
-      { $pull: { files: { $eq: filetodel._id } } },
-      false,
-      true
-    )
+    const files = task.files
+    let index = req.params.fileId
+    const ids = []
+    for (var i = 0; i < files.length; i++) {
+      ids.push(files[i]._id.toString())
+    }
 
-    console.log(req.params.fileId)
-    console.log(task.files)
+    console.log(ids)
+    const id_todelete = ids.indexOf(`${index}`)
 
-    const index = task.files.indexOf(req.params.fileId)
-    console.log(index)
-
-    //task.files.splice(index, 1)
+    task.files.splice(id_todelete, 1)
     task.save()
-    //await FileModel.deleteOne({ _id: req.params.fileId })
+
+    await FileModel.deleteOne({ _id: req.params.fileId })
     res.status(200).json(file)
   } catch (error) {
     res.status(404).json({ message: error.message })

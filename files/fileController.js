@@ -4,15 +4,20 @@ import TaskModel from "../tasks/taskModel.js"
 import UserModel from "../users/userModel.js"
 import express, { application } from "express"
 import cors from "cors"
+import path from "path"
+import { fileURLToPath } from "url"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 import { ID } from "../loggedUser.js"
 const router = express.Router()
 
 //multer
-const path = "./uploads"
+const uploads_path = "./uploads"
 export const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path) //dir path
+    cb(null, uploads_path) //dir path
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname)
@@ -66,24 +71,19 @@ export const uploadFiletoTask = async (req, res) => {
 //remove file in task
 export const removeFile = async (req, res) => {
   try {
-    const user = await UserModel.findById({ _id: ID }).populate("tasks")
+    //  const user = await UserModel.findById({ _id: ID }).populate("tasks")
     const task = await TaskModel.findById({ _id: req.params.taskId })
-
     const files = task.files
     let index = req.params.fileId
-    const ids = []
-    for (var i = 0; i < files.length; i++) {
-      ids.push(files[i]._id.toString())
-    }
 
-    console.log(ids)
-    const id_todelete = ids.indexOf(`${index}`)
-
-    task.files.splice(id_todelete, 1)
+    const fileIdToDelete = files.findIndex(
+      (file) => file._id.toString() === index
+    )
+    task.files.splice(fileIdToDelete, 1)
     task.save()
 
     await FileModel.deleteOne({ _id: req.params.fileId })
-    res.status(200).json(file)
+    res.status(200)
   } catch (error) {
     res.status(404).json({ message: error.message })
   }
@@ -92,7 +92,8 @@ export const removeFile = async (req, res) => {
 export const getSingleFile = async (req, res) => {
   try {
     const file = await FileModel.findOne({ _id: req.params.fileId })
-    res.status(200).json(file)
+    var path = `${file.file[0].destination}/${file.file[0].filename}`
+    res.download(path)
   } catch (error) {
     res.status(404).json({ message: error.message })
   }

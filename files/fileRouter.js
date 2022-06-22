@@ -10,7 +10,7 @@ import {
 const router = express.Router()
 
 router.get("/", getAllFiles)
-router.get("/:fileId", getSingleFile)
+router.get("/:taskId/:fileId", getSingleFile)
 
 router.post("/:taskId/files", upload.array("file", 3), uploadFiletoTask) // Post all Files to task
 

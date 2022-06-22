@@ -16,6 +16,12 @@ const userSchema = mongoose.Schema({
       ref: "ProjectModel",
     },
   ],
+  folders: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "FolderModel",
+    },
+  ],
   registeredAt: { type: Date, default: Date.now },
 })
 

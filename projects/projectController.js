@@ -2,6 +2,7 @@ import express from "express"
 import ProjectModel from "./projectModel.js"
 import TaskModel from "../tasks/taskModel.js"
 import UserModel from "../users/userModel.js"
+import FolderModel from "../folders/folderModel.js"
 
 import { ID } from "../loggedUser.js"
 const router = express.Router()
@@ -9,11 +10,19 @@ const router = express.Router()
 //create new project
 export const createNewProject = async (req, res) => {
   try {
+    const folderId = req.body.folder
+
     const newProject = new ProjectModel({
       projectName: req.body.projectName,
       user: ID,
+      folder: folderId,
     })
     await newProject.save()
+
+    const user = await UserModel.findById({ _id: ID })
+    user.projects.push(newProject)
+    user.save()
+
     res.json(newProject)
   } catch (error) {
     res.status(400).json({ message: error.message })
@@ -76,7 +85,9 @@ export const editProject = async (req, res) => {
   try {
     const project = await ProjectModel.updateOne(
       { _id: req.params.projectId },
-      { $set: { projectName: req.body.projectName } }
+      {
+        $set: { projectName: req.body.projectName, folder: req.body.folder },
+      }
     )
     res.status(200).json(project)
   } catch (error) {

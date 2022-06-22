@@ -6,6 +6,10 @@ const projectSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "UserModel",
   },
+  folder: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "FolderModel",
+  },
 })
 var ProjectModel = mongoose.model("ProjectModel", projectSchema)
 export default ProjectModel

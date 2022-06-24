@@ -47,6 +47,7 @@ export const upload = multer({
 })
 
 export const uploadFiletoTask = async (req, res) => {
+  console.log(req.ip);
   try {
     const task = await TaskModel.findById({ _id: req.params.taskId })
     const data = []
@@ -70,6 +71,7 @@ export const uploadFiletoTask = async (req, res) => {
 
 //remove file in task
 export const removeFile = async (req, res) => {
+  console.log(req.ip);
   try {
     //  const user = await UserModel.findById({ _id: ID }).populate("tasks")
     const task = await TaskModel.findById({ _id: req.params.taskId })

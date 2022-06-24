@@ -8,6 +8,7 @@ const router = express.Router()
 
 //create new user tag
 export const createNewUserTag = async (req, res) => {
+  console.log(req.ip);
   try {
     const newTag = new TagModel({
       tagName: req.body.tagName,
@@ -22,6 +23,7 @@ export const createNewUserTag = async (req, res) => {
 
 //get all user tags
 export const getAllUserTags = async (req, res) => {
+  console.log(req.ip);
   try {
     const tags = await TagModel.find({ user: ID })
     res.status(200).json(tags)
@@ -32,6 +34,7 @@ export const getAllUserTags = async (req, res) => {
 
 //remove user user tag
 export const removeUserTag = async (req, res) => {
+  console.log(req.ip);
   try {
     const tag = await TagModel.findById({ _id: req.params.tagId })
 
@@ -53,6 +56,7 @@ export const removeUserTag = async (req, res) => {
 }
 
 export const editSingleUserTag = async (req, res) => {
+  console.log(req.ip);
   try {
     const tag = await TagModel.updateOne(
       { _id: req.params.tagId },

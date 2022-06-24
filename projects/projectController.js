@@ -9,6 +9,7 @@ const router = express.Router()
 
 //create new project
 export const createNewProject = async (req, res) => {
+  console.log(req.ip);
   try {
     const folderId = req.body.folder
 
@@ -30,6 +31,7 @@ export const createNewProject = async (req, res) => {
 }
 
 export const getSingleProject = async (req, res) => {
+  console.log(req.ip);
   try {
     const project = await ProjectModel.findOne({ _id: req.params.projectId })
     res.status(200).json(project)
@@ -40,6 +42,7 @@ export const getSingleProject = async (req, res) => {
 
 //get all projects
 export const getAllProjects = async (req, res) => {
+  console.log(req.ip);
   try {
     const project = await ProjectModel.find({ user: ID })
     res.status(200).json(project)
@@ -50,6 +53,7 @@ export const getAllProjects = async (req, res) => {
 
 //get all tasks from project
 export const getAllProjectTasks = async (req, res) => {
+  console.log(req.ip);
   try {
     const project = await TaskModel.find({
       project: { $eq: req.params.projectId },
@@ -62,6 +66,7 @@ export const getAllProjectTasks = async (req, res) => {
 
 //Project and tasks in project remove
 export const removeProject = async (req, res) => {
+  console.log(req.ip);
   try {
     const tasksinproject = await TaskModel.deleteMany({
       project: { $eq: req.params.projectId },
@@ -82,6 +87,7 @@ export const removeProject = async (req, res) => {
 
 // edit project
 export const editProject = async (req, res) => {
+  console.log(req.ip);
   try {
     const project = await ProjectModel.updateOne(
       { _id: req.params.projectId },

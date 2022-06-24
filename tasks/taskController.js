@@ -60,6 +60,8 @@ export const getSingleUserTask = async (req, res) => {
 export const createUserTask = async (req, res) => {
   //create task
   console.log(req.ip);
+  const projectId = req.body.project
+  
   try {
     const task = new TaskModel({
       title: req.body.title,
@@ -68,6 +70,7 @@ export const createUserTask = async (req, res) => {
       status: req.body.status,
       tags: req.body.tags,
       dueDate: req.body.dueDate,
+      project: projectId,
     })
     task.save()
 
@@ -113,6 +116,7 @@ export const editSingleUserTask = async (req, res) => {
           tags: req.body.tags,
           dueDate: req.body.dueDate,
           project: req.body.project,
+          updated: Date.now(),
         },
       }
     )

@@ -24,14 +24,14 @@ admin.initializeApp({
 });
 
 const myLogger = async function(req,res,next){
-  console.log("XDDD");
   const token = req.headers.authorization;
   console.log(token);
   try{
 
   const decodeValue = await admin.auth().verifyIdToken(token);
+  console.log("TOKEN:"+decodeValue.uid);
   if(decodeValue){
-    console.log(decodeValue);
+    console.log("TOKEN:"+decodeValue);
       return next();
   }
 

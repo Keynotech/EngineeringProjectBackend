@@ -3,7 +3,7 @@ import TaskModel from "./taskModel.js"
 import UserModel from "../users/userModel.js"
 import mongoose from "mongoose"
 
-import { ID } from "../loggedUser.js"
+import { ID } from "../../loggedUser.js"
 const router = express.Router()
 
 export const getUserTasks = async (req, res) => {

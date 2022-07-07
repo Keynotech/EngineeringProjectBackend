@@ -1,16 +1,16 @@
 import express from "express"
 import mongoose from "mongoose"
 import cors from "cors"
-import taskRoutes from "./tasks/taskRouter.js"
-import tagRoutes from "./tags/tagRouter.js"
-import userRoutes from "./users/userRouter.js"
-import fileRoutes from "./files/fileRouter.js"
-import projectRoutes from "./projects/projectRouter.js"
-import folderRoutes from "./folders/folderRouter.js"
+import taskRoutes from "./models/tasks/taskRouter.js"
+import tagRoutes from "./models/tags/tagRouter.js"
+import userRoutes from "./models/users/userRouter.js"
+import fileRoutes from "./models/files/fileRouter.js"
+import projectRoutes from "./models/projects/projectRouter.js"
+import folderRoutes from "./models/folders/folderRouter.js"
 
 //import { getToken } from "./firebase-auth-middleware.js"
-import admin from "firebase-admin";
-var serviceAccount = './jettasks.json';
+
+import myLogger from "./firebase/firebase-auth-middleware.js"
 
 import "dotenv/config"
 
@@ -19,32 +19,8 @@ const app = express()
 //Middlewares
 
 app.use(cors())
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
-
-const myLogger = async function(req,res,next){
-  const token = req.headers.authorization;
-  console.log(token);
-  try{
-
-  const decodeValue = await admin.auth().verifyIdToken(token);
-  console.log("TOKEN:"+decodeValue.uid);
-  if(decodeValue){
-    console.log("TOKEN:"+decodeValue);
-      return next();
-  }
-
-  return res.json({message:"Authorization..."});
-              
-}catch(e){
-  return res.json({message:"Authorization error!"});
-}
-}
 
 app.use(myLogger);
-
-
 app.use(express.json())
 app.use("/tasks", taskRoutes)
 app.use("/tags", tagRoutes)

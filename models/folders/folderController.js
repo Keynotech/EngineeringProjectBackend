@@ -4,7 +4,7 @@ import TaskModel from "../tasks/taskModel.js"
 import UserModel from "../users/userModel.js"
 import FolderModel from "./folderModel.js"
 
-import { ID } from "../loggedUser.js"
+import { ID } from "../../loggedUser.js"
 const router = express.Router()
 
 //create new folder

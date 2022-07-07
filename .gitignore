@@ -8,6 +8,7 @@ mongo.yaml
 mongo.yml
 Dockerfile
 docker-compose.yml
+jettasks.json
 
 # testing
 /coverage

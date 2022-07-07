@@ -3,7 +3,7 @@ import TagModel from "./tagModel.js"
 import TaskModel from "../tasks/taskModel.js"
 import UserModel from "../users/userModel.js"
 
-import { ID } from "../loggedUser.js"
+import { ID } from "../../loggedUser.js"
 const router = express.Router()
 
 //create new user tag
